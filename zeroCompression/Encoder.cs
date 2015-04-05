@@ -4,16 +4,22 @@ namespace ZeroCompression
 {
     public class Encoder
     {
+        private int _sequenceLength = 128;
+
+        public Encoder(int sequenceLength)
+        {
+            _sequenceLength = sequenceLength;
+        }
+
         public List<int> Encode(List<int> inputList)
         {
             int counter = 1;
-            const int counterLimit = 10;
 
             List<int> outputList = new List<int>();
 
             for(int i = 1; i < inputList.Count; i++)
             {
-                if (counter == counterLimit)
+                if (counter == _sequenceLength)
                 {
                     compress(ref outputList, inputList[i - 1], ref counter);
                     continue;

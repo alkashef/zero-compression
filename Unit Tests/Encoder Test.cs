@@ -10,7 +10,7 @@ namespace Unit_Tests
     {
         // --------------------------------------------------------------------
         
-        private Encoder _encoderUnderTest = new Encoder();
+        private Encoder _encoderUnderTest = new Encoder(10);
 
         private List<int> _inputList = new List<int>();
         private List<int> _refList = new List<int>();
