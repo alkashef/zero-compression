@@ -56,9 +56,9 @@ namespace ZeroCompression
             return outputList;
         }
 
-        private void compress(ref List<byte> list, int sequenceType, ref int sequenceLength)
+        private void compress(ref List<byte> list, byte sequenceType, ref int sequenceLength)
         {
-            if (sequenceType == 1) // compress 1's
+            if (sequenceType == 0x01) // compress 1's
                 list.Add((byte)(sequenceLength + 128));
             else // compress 0's
                 list.Add((byte)(sequenceLength));
