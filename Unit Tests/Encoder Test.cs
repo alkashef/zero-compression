@@ -12,21 +12,21 @@ namespace Unit_Tests
         
         private Encoder _encoderUnderTest = new Encoder(10);
 
-        private List<int> _inputList = new List<int>();
-        private List<int> _refList = new List<int>();
+        private List<byte> _inputList = new List<byte>();
+        private List<byte> _refList = new List<byte>();
 
         // --------------------------------------------------------------------
-        
-        private bool CompareLists(List<int> list1, List<int> list2)
+
+        private bool CompareLists(List<byte> list1, List<byte> list2)
         {
             int firstNotSecond = list2.Except(list1).ToList().Count;
             int secondNotFirst = list1.Except(list2).ToList().Count;
             return ((firstNotSecond + secondNotFirst) == 0);
         }
 
-        private bool EncodeAndCompare(List<int> inputList, List<int> refList)
+        private bool EncodeAndCompare(List<byte> inputList, List<byte> refList)
         {
-            List<int> outputList = _encoderUnderTest.Encode(inputList);
+            List<byte> outputList = _encoderUnderTest.Encode(inputList);
             return CompareLists(outputList, refList);
         }
 
@@ -35,56 +35,56 @@ namespace Unit_Tests
         [Test]
         public void ZerosInTheMiddle()
         {
-            _inputList = new List<int>() { 0, 1, 0, 1, 0, 0, 0, 0, 0, 1 };
-            _refList = new List<int>() { 0, 1, 0, 1, 5, 1 };
+            _inputList = new List<byte>() { 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 };
+            _refList = new List<byte>() { 0x00, 0x01, 0x00, 0x01, 0x05, 0x01 };
             Assert.AreEqual(true, EncodeAndCompare(_inputList, _refList));
         }
 
         [Test]
         public void OnesInTheMiddle()
         {
-            _inputList = new List<int>() { 1, 0, 1, 0, 1, 1, 1, 1, 1, 0 };
-            _refList = new List<int>() { 1, 0, 1, 0, 5 + 128, 0 };
+            _inputList = new List<byte>() { 0x01, 0x00, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00 };
+            _refList = new List<byte>() { 0x01, 0x00, 0x01, 0x00, 0x85, 0x00 };
             Assert.AreEqual(true, EncodeAndCompare(_inputList, _refList));
         }
 
         [Test]
         public void ZerosOnTheEdge()
         {
-            _inputList = new List<int>() {0,0,0,0,1,0};
-            _refList = new List<int>() {4,1,0};
+            _inputList = new List<byte>() { 0x00, 0x00, 0x00, 0x00, 0x01, 0x00 };
+            _refList = new List<byte>() { 0x04, 0x01, 0x00 };
             Assert.AreEqual(true, EncodeAndCompare(_inputList, _refList));
         }
 
         [Test]
         public void OnesOnTheEdge()
         {
-            _inputList = new List<int>() {0,1,0,1,1,1,1,1,1};
-            _refList = new List<int>() {0,1,0,6+128};
+            _inputList = new List<byte>() { 0x00, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 };
+            _refList = new List<byte>() { 0x00, 0x01, 0x00, 0x86 };
             Assert.AreEqual(true, EncodeAndCompare(_inputList, _refList));
         }
 
         [Test]
         public void AllZeros()
         {
-            _inputList = new List<int>() {0,0,0,0,0,0,0,0};
-            _refList = new List<int>() {8};
+            _inputList = new List<byte>() { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            _refList = new List<byte>() { 0x08 };
             Assert.AreEqual(true, EncodeAndCompare(_inputList, _refList));
         }
 
         [Test]
         public void TwoSequencesConcatenated()
         {
-            _inputList = new List<int>() {0,0,0,0,0,0,0,0,1,1,1};
-            _refList = new List<int>() {8,3+128};
+            _inputList = new List<byte>() { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01 };
+            _refList = new List<byte>() { 0x08, 0x83 };
             Assert.AreEqual(true, EncodeAndCompare(_inputList, _refList));
         }
 
         [Test]
         public void SequenceTooLong()
         {
-            _inputList = new List<int>() {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
-            _refList = new List<int>() {10,5,1};
+            _inputList = new List<byte>() { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 };
+            _refList = new List<byte>() { 0x0A, 0x05, 0x01 };
             Assert.AreEqual(true, EncodeAndCompare(_inputList, _refList));
         }
     }

@@ -11,11 +11,11 @@ namespace ZeroCompression
             _sequenceLength = sequenceLength;
         }
 
-        public List<int> Encode(List<int> inputList)
+        public List<byte> Encode(List<byte> inputList)
         {
             int counter = 1;
 
-            List<int> outputList = new List<int>();
+            List<byte> outputList = new List<byte>();
 
             for(int i = 1; i < inputList.Count; i++)
             {
@@ -56,12 +56,12 @@ namespace ZeroCompression
             return outputList;
         }
 
-        private void compress(ref List<int> list, int sequenceType, ref int sequenceLength)
+        private void compress(ref List<byte> list, int sequenceType, ref int sequenceLength)
         {
             if (sequenceType == 1) // compress 1's
-                list.Add(sequenceLength + 128);
+                list.Add((byte)(sequenceLength + 128));
             else // compress 0's
-                list.Add(sequenceLength);
+                list.Add((byte)(sequenceLength));
 
             sequenceLength = 1; // reset sequence counter
         }
